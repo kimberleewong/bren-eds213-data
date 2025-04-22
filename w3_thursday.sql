@@ -50,7 +50,8 @@ SELECT AVG(Area) FROM Site WHERE Location LIKE '%Alaska%';
 SELECT Site_name, MAX(Area) FROM Site;
 
 -- introduction to grouping
-SELECT Location, MAX(Area)
+SELECT Site_name, MAX(Area) AS Area
     From Site
-    GROUP BY Location;
-    
+    GROUP BY Site_name
+    ORDER BY Area DESC
+    LIMIT 1;
