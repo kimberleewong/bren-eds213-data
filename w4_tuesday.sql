@@ -94,7 +94,7 @@ SELECT Nest_ID, ANY_VALUE(Observer) as Observer, COUNT(*) AS Num_eggs
 .tables
 SELECT * FROM my_nests;
 SELECT Nest_ID, Name, Num_eggs
-    FROm my_nests JOIN Personnel
+    FROM my_nests JOIN Personnel
     ON Observer = Abbreviation;
 
 -- view
