@@ -1,0 +1,9 @@
+subquery,10,1,0.1
+subquery,100,4,0.04
+subquery,1000,46,0.046
+outer_join,10,1,0.1
+outer_join,100,4,0.04
+outer_join,1000,44,0.044
+except,10,0,0.0
+except,100,4,0.04
+except,1000,45,0.045
