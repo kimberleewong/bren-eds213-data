@@ -1,0 +1,41 @@
+---
+title: "Who were the winners"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(DBI)
+library(duckdb)
+library(dbplyr)
+```
+
+Let's connect our database
+```{r}
+conn <- DBI::dbConnect(duckdb::duckdb(), dbdir = "database/database.db")
+```
+
+```{r}
+egg_table <- tbl(conn, "Bird_eggs")
+personnel_table <- tbl(conn, "Personnel")
+nests_table <- tbl(conn, "Bird_nests")
+```
+
+```{r}
+winners <- egg_table %>%
+
+  inner_join(nests_table, by = c("Nest_ID" = "Nest_ID")) %>%
+  inner_join(personnel_table, by = c("Observer" = "Abbreviation")) %>% 
+  group_by(Name) %>% 
+  summarize(egg_count = n()) %>% 
+  arrange(desc(egg_count)) %>% 
+  head(3) %>% 
+  show_query()
+             
+print(winners)
+
+# The show_query() showed that it did it all in one query and it used the SQL syntax of LIMIT as opposed to R. 
+```
+
