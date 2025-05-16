@@ -39,3 +39,8 @@ print(winners)
 # The show_query() showed that it did it all in one query and it used the SQL syntax of LIMIT as opposed to R. 
 ```
 
+### Don't forget to close the connection
+```{r}
+DBI::dbDisconnect(conn, shutdown = TRUE)
+```
+
