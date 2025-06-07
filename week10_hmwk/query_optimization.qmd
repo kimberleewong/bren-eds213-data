@@ -1,0 +1,57 @@
+---
+title: "Query Optimization"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+## Part 1
+
+1. When running the command PRAGMA index_list('Bird_nests');, it shows  the table has an existing index created by the primary key, Nest_ID. But, this index isn't used in the query because the filtering conditions in the WHERE clause don't use the Nest_ID column. Instead, the query is filtered based on other specifications.
+
+Running the EXPLAIN QUERY PLAN (query from assignment) command in SQLite confirms this is true, as it returns --SCAN Bird_nests, indicating that a full table scan is done instead of using an index. This confirms that no index is being used for the query.
+
+2. Adding an index to a column not referenced in the WHERE clause will not benefit the query performance because the database does not need to search or filter based on that column. So, the index would not be used to narrow down the query results.
+
+## Part 2
+```{r}
+library(tidyverse)
+library(here)
+```
+
+```{r}
+# Import timings data
+timings <- read_csv(here("week10", "timings.csv"))
+```
+
+### Graph
+
+```{r}
+# Plot log-transformed data
+ggplot(timings, aes(x = log(distinct_values), y = log(time_per_rep))) +
+  geom_point() +
+  labs(title = "Log-Transformed Number of Distinct Index Values vs. Query Time",
+       x = "Distinct Index Values (log-transformed)",
+       y = "Query time (log-transformed)") +
+  theme_minimal()
+```
+
+### Questions
+
+**What relationship do you observe? Hypothesize why you see the relationship you do.**
+
+This graph shows a strong, negative, linear relationship between distinct index values and query time, up to a certain threshold of ~ 10 (log-transformed) distinct values. This tells me that as you give an index more values to search, the query gets faster, up to a point! Eventually, you have diminishing returns where the index can get larger and larger, but the query does not get quicker. This tells me that if I were really focused on query optimization, I would always try to find that index sweet spot of maximum speed without an unnecessarily large index.
+
+**What conclusion do you draw regarding what makes a good index?**
+I would conclude a good index is one that is more or less representative of whole of the table, but doesn't need to capture everything. This let's the database have a solid index of reference points from which to search without getting too granular. I think this value is always going to be relative to the overall size of the database. When I color by the query, I can see that the combinations of `year_observer` and `species_observer` sit right on that flattening point with approximately 20,000 distinct values. With `Bird_nests` having ~ 2 million rows, your index only needs to cover ~1% of distinct values to serve its purpose effetively. 
+
+```{r}
+# Plot log-transformed data
+ggplot(timings, aes(x = log(distinct_values), y = log(time_per_rep))) +
+  geom_point(aes(color = query)) +
+  labs(title = "Log-Transformed Number of Distinct Index Values vs. Query Time",
+       x = "Distinct Index Values (log-transformed)",
+       y = "Query time (log-transformed)") +
+  theme_minimal()
+```
+```
+
